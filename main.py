@@ -752,6 +752,41 @@ async def text_handler(bot: Client, m: Message):
                         time.sleep(e.x)
                         count += 1
                         pass    
+                elif "adda247" in url:
+                    try:
+                         # Extract the file extension from the URL (e.g., .doc, .pdf)
+                        response = requests.get(url, headers={
+                            "Host": "store.adda247.com",  # Create output file name
+                            "User-Agent": "Mozilla/5.0 (Linux; Android 11; moto g(40) fusion Build/RRI31.Q1-42-51-8; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/97.0.4692.98 Mobile Safari/537.36",
+                            "accept": "*/*",
+                            "x-requested-with": "com.adda247.app",
+                            "sec-fetch-site": "same-origin",
+                            "sec-fetch-mode": "cors",
+                            "sec-fetch-dest": "empty",
+                            "referer": "https://store.adda247.com/build/pdf.worker.js",
+                            "accept-encoding": "gzip, deflate",
+                            "accept-language": "en-US,en;q=0.9",
+                            "cookie": f"cp_token={raw_text4}"
+                         }, stream=True)
+                         # Check response
+                        if response.status_code == 200:
+                             # Extract file extension
+                            output_file = f"{name}.pdf"  # Save with appropriate file extension
+                            # Save file locally
+                            with open(output_file, "wb") as f:
+                                for chunk in response.iter_content(chunk_size=1024):
+                                        f.write(chunk)
+                         # Send the document
+                            await bot.send_document(chat_id=m.chat.id, document=output_file, caption=cc1)
+                            count += 1
+                         # Cleanup after sending
+                            os.remove(output_file)
+                            time.sleep(2)
+                    except Exception as e:
+                        await m.reply_text(
+                        f"{e}\nDownload Failed\n\nName : {name}\n\nLink : {url}"
+                 )
+                        pass
 
                 elif "cpvod.testbook.com" in url:
                     try:
