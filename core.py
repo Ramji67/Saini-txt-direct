@@ -8,6 +8,7 @@ import logging
 import requests
 import tgcrypto
 import subprocess
+import random
 import concurrent.futures
 
 from utils import progress_bar
@@ -179,20 +180,27 @@ async def download_video(url,cmd, name):
         return os.path.isfile.splitext[0] + "." + "mp4"
 
 
-async def send_doc(bot: Client, m: Message,cc,ka,cc1,prog,count,name):
-    reply = await m.reply_text(f"<pre><code>Uploading » `{name}`</code></pre>")
+async def send_doc(bot: Client, m: Message, cc, ka, cc1, prog, count, name):
+    # Display random emoji right after the speed check
+    reply = await m.reply_text(f"Uploading ..🚀..** - `{name}`\n╰────⌈**『 🅹🅰️🅸 🆂🅷🆁🅸 🆁🅰️🅼 ⚡️ 🧑‍💻**⌋────╯")
+    emoji_message = await show_random_emojis(reply)  # Show the emoji after uploading start message
     time.sleep(1)
+    
     start_time = time.time()
-    await m.reply_document(ka,caption=cc1)
-    count+=1
-    await reply.delete (True)
+    await m.reply_document(ka, caption=cc1)
+    count += 1
+    
+    # Clean up messages and files
+    await reply.delete(True)
+    await emoji_message.delete()  # Delete emoji message after upload
     time.sleep(1)
-    os.remove(ka)
-    time.sleep(3) 
+    os.remove(ka)  # Remove file after sending
+    time.sleep(3)
+
 
 
 async def send_vid(bot: Client, m: Message,cc,filename,thumb,name,prog):
-    subprocess.run(f'ffmpeg -i "{filename}" -ss 00:01:00 -vframes 1 "{filename}.jpg"', shell=True)
+    subprocess.run(f'ffmpeg -i "{filename}" -ss 00:01:00 -vframes 1- preset ultrafast "{filename}.jpg"', shell=True)
     await prog.delete (True)
     reply = await m.reply_text(f"<pre><code>**★彡 ᵘᵖˡᵒᵃᵈⁱⁿᵍ 彡★ ...⏳**</code></pre>\n<pre><code>**📚𝐓𝐢𝐭𝐥𝐞** » `{name}</code></pre>\n<pre><code>✦𝐁𝐨𝐭 𝐌𝐚𝐝𝐞 𝐁𝐲 ✦ 𝙎𝘼𝙄𝙉𝙄 𝘽𝙊𝙏𝙎</code></pre>")
     try:
